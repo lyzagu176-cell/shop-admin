@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <title>JS动画</title>
+</head>
+<body>
+    <div id="Application">  
+        <div :style="{backgroundColor: 'blue', width: width + 'px', height:height + 'px'}" @click="run">
+        </div>   
+    </div>
+    <script>
+        const {createApp, ref} = Vue
+        const App = createApp({
+            setup() {
+                const width = ref(100)
+                const height = ref(100)
+                let timer = null
+                const run = () => {
+                    timer = setInterval(animation, 10)
+                }
+                const animation = () => {
+                    if (width.value == 200) {
+                        clearInterval(timer)
+                        return
+                    } else {
+                        width.value += 1
+                        height.value += 1
+                    }
+                }
+                return {
+                    width, height, run
+                }
+            }
+        })
+        App.mount("#Application") 
+    </script>
+</body>
+</html>

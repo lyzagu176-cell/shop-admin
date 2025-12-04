@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vue3 Demo</title>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+</head>
+<body>
+    <div style="text-align: center;" id="Application">
+        <h1>{{ count }}</h1>
+        <button v-on:click="clickButton">点击</button>
+    </div>
+    <script>
+        // 使用Vue中的createApp和ref方法
+        const { createApp, ref } = Vue
+        // 定义组件
+        let config = {
+            setup() {
+                // 定义计数属性，具有响应性
+                const count = ref(0)
+                // 定义按钮点击方法
+                const clickButton = function() {
+                    count.value ++
+                }
+                // 将属性与方法导出
+                return {
+                    count,
+                    clickButton
+                }
+            }
+        }
+        // 创建应用实例
+        let app = createApp(config)
+        // 将应用实例绑定到id为Application的标签中
+        app.mount('#Application')
+    </script>
+</body>
+</html>

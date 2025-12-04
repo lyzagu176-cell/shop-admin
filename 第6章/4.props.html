@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vue组件Props</title>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+</head>
+<body>
+    <div id="Application">
+        <comp1 :count="11"></comp1>
+    </div>
+    <script>
+        const {createApp, ref, computed} = Vue
+        const App = createApp({})
+        const comp1 = {
+            props:{   
+                count: {
+                    validator: function(value) {
+                        if (typeof(value) != 'number' || value <= 10) {
+                            return false
+                        }
+                        return true
+                    }
+                }
+            },
+            setup(props){
+                const {count} = props
+                const thisCount = ref(count)
+                const click = () => {
+                    thisCount.value += 1
+                }
+                const innerCount = computed(()=>{
+                    count.value + thisCount.value
+                })
+                return {innerCount, thisCount, click}
+            },
+            template:`
+                <button @click="click">点击</button>
+                <div>计数:{{this.thisCount}}</div>`
+        }
+        App.component("comp1", comp1)
+        App.mount("#Application") 
+    </script>
+</body>
+</html>

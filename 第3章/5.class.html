@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Class绑定</title>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <!-- 定义测试使用的样式表 -->
+    <style>
+        .red {
+            color:red
+        }
+        .blue {
+            color:blue
+        }
+        .font {
+            font-size: 30px;
+        }
+    </style>
+</head>
+<body>
+    <div id="Application">
+        <div :class="{blue:isBlue,red:isRed}">
+            示例文案
+        </div>
+        <!-- 数组中的样式表都会被添加 -->
+        <div :class="[redClass, fontClass]">
+            示例文案
+        </div>
+        <div :style="{color:textColor,fontSize:textFont}">
+            示例文案
+        </div>
+    </div>
+    <script>
+        const {createApp, ref} = Vue
+        const config = {
+            setup() {
+                // 控制样式是否生效的属性
+                const isBlue = ref(true)
+                const isRed = ref(false)
+                // 控制样式选用的对象
+                const style = ref({
+                    blue:true,
+                    red:false
+                })
+                // 其他样式控制属性
+                const redClass = ref("red")
+                const fontClass = ref("font")
+                const textColor = ref("green")
+                const textFont = ref("50px") 
+                return {isBlue, isRed, style, redClass, fontClass, textColor, textFont}
+            }
+        }
+        createApp(config).mount("#Application") 
+    </script>
+</body>
+</html>

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vue开关组件</title>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+</head>
+<body>
+    <div id="Application">
+        <my-switch @switch-change="change1" switch-style="mini" background-color="green" border-color="green" color="blue"></my-switch>
+        <div>开关状态:{{state1}}</div>
+        <br/>
+        <my-switch @switch-change="change2" switch-style="normal" background-color="blue" border-color="blue" color="red"></my-switch>
+        <div>开关状态:{{state2}}</div>
+    </div>
+    <script>
+        const {createApp, ref, computed} = Vue
+        const App = createApp({
+            setup(){
+                const state1 = ref("关")
+                const state2 = ref("关")
+                const change1 = (isOpen) => {
+                    state1.value = isOpen ? "开" : "关"
+                }
+                const change2 = (isOpen) => {
+                    state2.value = isOpen ? "开" : "关"
+                }
+                return {state1, state2, change1, change2}
+            }
+        })
+
+        const switchComponent = {
+            // 定义的外部属性
+            props: ["switchStyle", "borderColor", "backgroundColor", "color"],
+            emits: ["switchChange"],
+            // 内部属性，控制开关状态
+            setup(props, ctx) {
+                const isOpen = ref(false)
+                const left = ref('0px')
+                const cssStyleBG = computed(()=>{
+                    if (props.switchStyle == "mini") {
+                        return `position: relative; border-color: ${props.borderColor}; border-width: 2px; border-style: solid;width:55px; height: 30px;border-radius: 30px; background-color: ${isOpen.value ? props.backgroundColor:'white'};`
+                    } else {
+                        return `position: relative; border-color: ${props.borderColor}; border-width: 2px; border-style: solid;width:55px; height: 30px;border-radius: 10px; background-color: ${isOpen.value ? props.backgroundColor:'white'};`
+                    }
+                })
+                // 通过计算属性来设置CSS样式
+                const cssStyleBtn = computed(()=>{
+                    if (props.switchStyle == "mini") {
+                        return `position: absolute; width: 30px; height: 30px; left:${left.value}; border-radius: 50%; background-color: ${props.color};`
+                    } else {
+                        return `position: absolute; width: 30px; height: 30px; left:${left.value}; border-radius: 8px; background-color: ${props.color};`
+                    }
+                })
+                // 组件状态切换方法
+                const click = () => {
+                    isOpen.value = !isOpen.value
+                    left.value = isOpen.value ? '25px' : '0px'
+                    ctx.emit('switchChange', isOpen.value)
+                }
+                return {isOpen, left, cssStyleBG, cssStyleBtn, click}
+            },
+            template:`
+                <div :style="cssStyleBG" @click="click">
+                    <div :style="cssStyleBtn"></div>
+                </div>
+            `
+        }
+        App.component("my-switch", switchComponent)
+        App.mount("#Application") 
+    </script>
+</body>
+</html>

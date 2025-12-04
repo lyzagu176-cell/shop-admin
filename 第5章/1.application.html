@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vue应用</title>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+</head>
+<body>
+    <div id="Application">
+        <button @click="click">单击</button>
+        {{ countString }}
+    </div>
+    <script>
+        const {createApp, ref, computed, watch} = Vue
+        const config = {
+            setup() {
+                const data = ref({
+                    count: 0
+                })
+                const countString = computed({
+                    get(){
+                        return data.value.count + "次"
+                    }
+                })
+                const click = () => {
+                    data.value.count += 1
+                }
+                watch(data, (value, oldValue)=>{
+                    console.log(value, oldValue)
+                }, {deep: true, once: true})
+                return {data, click, countString}
+            }
+        }
+
+        const App = createApp(config)
+        App.mount("#Application") 
+    </script>
+</body>
+</html>

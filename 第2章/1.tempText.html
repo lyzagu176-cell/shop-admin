@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>模板插值</title>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <style type="text/css">
+        #h1 {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <!-- <div style="text-align: center;">
+        <h1>这里是模板的内容:1次点击</h1>
+        <button>按钮</button>
+    </div> -->
+    <div id="Application" style="text-align: center;">
+        <h1>这里是模板的内容:{{count}}次点击</h1>
+        <h1 v-once>这里是模板的内容:{{count}}次点击</h1>
+        <h1>这里是模板的内容:{{countHTML}}次点击</h1>
+        <h1 v-once>这里是模板的内容:<span v-html="countHTML"></span>次点击</h1>
+        <!-- <h1 v-once>这里是模板的内容:{{count}}次点击</h1> -->
+
+        <h1 v-bind:id="id1">这里是模板的内容:{{count}}次点击</h1>
+        <button v-on:click="clickButton">按钮</button>
+    </div>
+    <script>
+        const {createApp, ref} = Vue
+        // 定义一个Vue组件, 名为App
+        let config = {
+            setup() { 
+                // 定义组件中的数据
+                const count = ref(0)
+                const countHTML = ref("<span style='color:red;'>0</span>")
+                const id1 = ref("h1")
+                // 实现按钮点击的方法
+                const clickButton = () => {
+                    count.value += 1
+                }
+                return {count, countHTML, id1, clickButton}
+            }
+        }
+        // 将Vue组件绑定到页面上id为Application的元素上
+        createApp(config).mount("#Application") 
+    </script>
+</body>
+</html>

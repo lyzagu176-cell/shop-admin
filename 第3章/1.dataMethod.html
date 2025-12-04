@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>属性与方法</title>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+</head>
+<body>
+    <div id="Application">
+        <div>{{count}}</div>
+        <div>{{type}}</div>
+        <div>{{typeFunc()}}</div>
+        <button @click="add">Add</button>
+    </div>
+    <script>
+        const {createApp, ref, computed} = Vue
+        // 定义组件
+        const config = {
+            setup() {
+                const count = ref(0)
+                const add = () => {
+                    count.value ++
+                }
+                const typeFunc = () => {
+                    return count.value > 10 ? "大" : "小"
+                }
+                // const type = computed(()=>{
+                //     return count.value > 10 ? "大" : "小"
+                // })
+                const type = computed({
+                    get() {
+                        return count.value > 10 ? "大" : "小"
+                    },
+                    set(newValue) {
+                        if (newValue == "大") {
+                            count.value = 11
+                        } else {
+                            count.value = 0
+                        }
+                    }
+                })
+                return {count, add, type, typeFunc}
+            }
+        }
+        // 创建组件并获取到组件实例
+        let instance = createApp(config).mount("#Application") 
+        // 可以获取到组件中的data数据
+        console.log(instance.count)
+        // 修改属性
+        instance.count = 5
+        // 下面获取到的count的值为5
+        console.log(instance.count)
+        // 实例可以直接调用方法
+        instance.add()
+        //1
+        console.log(instance.count)
+        console.log(instance.type)
+        // console.log(instance.type)
+        instance.type = "大"
+        // 将输出11
+        console.log(instance.count)
+    </script>
+</body>
+</html>

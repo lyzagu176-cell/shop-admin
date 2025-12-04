@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <title>Vue过渡动画</title>
+</head>
+<body>
+    <style>      
+        .list-enter-active,
+        .list-leave-active {
+            transition: all 1s ease;
+        }
+
+        .list-enter-from,
+        .list-leave-to {
+            opacity: 0;
+        }
+
+        .list-move {
+            transition: transform 1s ease;
+        }
+    </style>
+    <div id="Application">  
+        <button @click="click">添加元素</button>
+        <button @click="dele">删除元素</button>
+        <button @click="sort">重排元素</button>
+        <transition-group name="list">
+            <div v-for="item in items" :key="item">
+            元素：{{ item }}
+            </div>
+        </transition-group>
+    </div>
+    <script>
+        const {createApp, ref} = Vue
+        const App = Vue.createApp({
+            setup() {
+                const items = ref([1,2,3,4,5])
+                const click = () => {
+                    items.value.push(items.value[items.value.length-1] + 1)
+                }
+                const dele = () => {
+                    if(items.value.length > 0) {
+                        items.value.pop()
+                    }
+                }
+                const sort = () => {
+                    items.value.reverse()
+                }
+                return {items, dele, sort, click}
+            }
+        })
+        App.mount("#Application") 
+    </script>
+</body>
+</html>

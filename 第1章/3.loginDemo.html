@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>登录</title>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+</head>
+<body>
+    <div id="Application" style="text-align: center;">
+        <!-- 标题 -->
+        <h1>{{title}}</h1>
+        <!-- 创建账号和密码输入组件 -->
+        <div v-if="noLogin">账号：<input v-model="userName" type="text" /></div>
+        <div v-if="noLogin">密码：<input v-model="password" type="password" /></div>
+        <!-- 登录按钮 -->
+        <div v-on:click="click" style="border-radius: 30px;width: 100px; margin: 20px auto; color: white; background-color: blue;">{{buttonTitle}}</div>
+    </div>
+    <script>
+        const {createApp, ref} = Vue
+        const config = {
+            setup() {
+                // 定义页面所需要的数据
+                const title = ref("欢迎您：未登录")
+                const noLogin = ref(true)
+                const userName = ref("")
+                const password = ref("")
+                const buttonTitle = ref("登录")
+                // 定义登录按钮的点击方法
+                const click = function() {
+                    if (noLogin.value) {
+                        login()
+                    } else {
+                        logout()
+                    }
+                }
+                // 执行登录动作的函数
+                const login = () => {
+                    // 判断账号密码是否为空
+                    if (userName.value.length > 0 && password.value.length > 0) {
+                        // 登录提示后刷新页面
+                        alert(`userNmae:${userName.value} password:${password.value}`)
+                        noLogin.value = false
+                        title.value = `欢迎您:${userName.value}`
+                        buttonTitle.value = "注销"
+                        userName.value = ""
+                        password.value = ""
+                    } else {
+                        alert("请输入账号密码")
+                    }
+                }
+                // 执行登出动作的函数
+                const logout = () => {
+                    // 清空登录数据
+                    noLogin.value = true
+                    title.value = `欢迎您:未登录`
+                    buttonTitle.value = "登录"
+                }
+                return {title, noLogin, userName, password, buttonTitle, click}
+            }
+        }
+        // 创建应用实例
+        const app = createApp(config)
+        // 挂载应用到指定标签元素
+        app.mount("#Application")
+    </script> 
+</body>
+</html>

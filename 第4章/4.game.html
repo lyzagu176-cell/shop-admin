@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>圆球游戏</title>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            position: relative;
+            margin: 0 auto;
+            width: 440px;
+            height: 440px;
+            background-color: blanchedalmond;
+        }
+        .ball {
+            position:absolute;
+            width: 30px;
+            height: 30px;
+            left:0px;
+            top:0px;
+            background-color:orange;
+            border-radius: 30px;
+        }
+        .board {
+            position:absolute;
+            left: 0;
+            bottom: 0;
+            height: 10px;
+            width: 80px;
+            border-radius: 5px;
+            background-color: red;
+        }
+    </style>
+</head>
+<body>
+    <div id="Application">
+        <!-- 游戏区域 -->
+        <div class="container">
+            <!-- 底部挡板 -->
+            <div class="board" :style="{left: boardX + 'px'}"></div>
+            <!-- 弹球 -->
+            <div class="ball" :style="{left: ballX+'px', top: ballY+'px'}"></div>
+            <!-- 游戏结束提示 -->
+            <h1 v-if="fail" style="text-align: center;">游戏失败</h1>
+        </div>
+    </div>
+    <script>
+        const {createApp, ref, onMounted} = Vue
+        const config = {
+            setup() {
+                // 控制挡板位置
+                const boardX = ref(0)
+                // 控制弹球位置
+                const ballX = ref(0)
+                const ballY = ref(0)
+                // 控制弹球移动速度，模板中不需要使用，无需响应性
+                let rateX = 0.4
+                let rateY = 0.4
+                // 控制结束游戏提示的展示
+                const fail = ref(false)
+                // 计时器
+                let timer = undefined
+                // 控制挡板移动
+                const keydown = (event) => {
+                    if (event.key == "ArrowLeft") {
+                        if (boardX.value  > 10) {
+                            boardX.value -= 20
+                        } 
+                    } else if (event.key == "ArrowRight") {
+                        if (boardX.value  < 440 - 80) {
+                            boardX.value += 20
+                        } 
+                    }
+                }
+                // 向整个文档元素中添加键盘事件
+                const enterKeydown = () => {
+                    document.addEventListener("keydown", keydown);
+                }
+                // 组件生命周期函数，组件加载时会调用
+                onMounted(()=>{
+                    // 添加键盘事件
+                    enterKeydown();
+                    // 随机弹球的运动速度和方向
+                    rateX.value = (Math.random() + 0.1)
+                    rateY.value = (Math.random() + 0.1)
+                    // 开启计数器，控制弹球移动
+                    timer = setInterval(()=>{
+                        // 到达右侧边缘进行反弹
+                        if (ballX.value + rateX  >= 440 - 30) {
+                            rateX *= -1
+                        }
+                        // 到达左侧边缘进行反弹
+                        if (ballX.value + rateX <= 0) {
+                            rateX *= -1
+                        }
+                        // 到达上侧边缘进行反弹
+                        if (ballY.value + rateY <= 0) {
+                            rateY *= -1
+                        }
+                        // 控制小球移动
+                        ballX.value += rateX
+                        ballY.value += rateY
+                        // 失败判定
+                        if (ballY.value >= 440 - 30 - 10) {
+                            // 挡板接住了弹球，进行反弹
+                            if (boardX.value <= ballX.value + 30 && boardX.value + 80 >= ballX.value) {
+                                rateY *= -1
+                            } else {
+                            // 没有接住弹球，游戏结束
+                                clearInterval(timer)
+                                fail.value = true
+                            }
+                        }
+                    },2)
+                })
+                return {boardX, ballX, ballY, fail}
+            }
+        }
+        createApp(config).mount("#Application") 
+    </script>
+</body>
+</html>

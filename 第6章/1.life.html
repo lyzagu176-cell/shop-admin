@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vue组件生命周期</title>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+</head>
+<body>
+    <div id="Application">
+        <sub-com v-if="show">
+            {{content}}
+        </sub-com>
+        <button @click="changeShow">测试</button>
+    </div>
+    <script>
+        const {createApp, ref} = Vue
+        const sub = {
+            setup() {
+                console.log("组件创建前")
+                Vue.onBeforeMount(() => {
+                    console.log("组件被即将挂载前")
+                })
+                Vue.onMounted(() => {
+                    console.log("组件挂载完成")
+                })
+                Vue.onBeforeUpdate(() => {
+                    console.log("组件即将更新前")
+                })
+                Vue.onUpdated(() => {
+                    console.log("组件更新完成")
+                })
+                Vue.onActivated(() => {
+                    console.log("被缓存的组件激活时调用")
+                })
+                Vue.onDeactivated(() => {
+                    console.log("被缓存的组件停用时调用")
+                })
+                Vue.onBeforeUnmount(() => {
+                    console.log("组件即将被卸载前调用")
+                })
+                Vue.onUnmounted(() => {
+                    console.log("组件被卸载后调用")
+                })
+                Vue.onErrorCaptured((error, instance, info) => {
+                    console.log("捕获到来自子组件的异常时调用")
+                })
+                Vue.onRenderTracked((event) => {
+                    console.log("虚拟DOM重新渲染时调用", event)
+                })
+                Vue.onRenderTriggered((event) => {
+                    console.log("虚拟DOM被触发渲染时调用")
+                })
+                console.log("组件创建完成")
+            },
+            template:`
+                <div>
+                    <slot></slot>
+                </div>
+            `
+        }
+        const App = createApp({
+            setup() {
+                const show = ref(true)
+                const content = ref(0)
+                const changeShow = () => {
+                    // show.value = !show.value
+                    content.value += 1
+                }
+                return {show, content, changeShow}
+            }
+        })
+        App.component("sub-com", sub)
+        App.mount("#Application") 
+    </script>
+</body>
+</html>

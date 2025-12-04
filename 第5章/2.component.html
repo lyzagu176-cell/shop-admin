@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vue组件</title>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+</head>
+<body>
+    <div id="Application">
+        <my-alert title="自定义标题1" @myclick="myFunc"></my-alert>
+        <my-alert title="自定义标题2" @myclick="myFunc"></my-alert>
+        <my-input v-model="inputText"></my-input>
+        <div>{{inputText}}</div>
+        <button @click="this.inputText = ''">清空</button>
+    </div>
+    <script>
+        const {createApp, ref} = Vue
+        const App = createApp({
+            setup() {
+                const myFunc = (params) => {
+                    alert('父组件中的方法' + params)
+                }
+                const inputText = ref("")
+                return {myFunc, inputText}
+            }
+        })
+        const alertComponent = {
+            // 定义外部属性
+            props:['title'],
+            // 将组件的事件显示声明
+            emits: ['myclick'],
+            // props参数即是外部传入的属性对象
+            setup(props, ctx) { 
+                const msg = "警告框提示"
+                const count = ref(0)
+                const click = () => {
+                    // 可以直接使用外部属性
+                    alert(props.title + msg + count.value++) // 弹出提示框
+                }
+                const innerClick = () => {
+                    console.log("组件内部的逻辑")
+                    ctx.emit('myclick', props.title)
+                }
+                return {msg, count, click, innerClick}
+            },
+            // 模版中可以直接使用插值语法来将外部属性的值插入
+            // template:`<div><button @click="$emit('myclick', '参数')">{{title}}</button></div>`
+            template:`<div><button @click="innerClick">{{title}}</button></div>`
+        } 
+        App.component("my-alert",alertComponent) 
+        const inputComponent = {
+            props: ['modelValue'],
+            emits: ['update:modelValue'],
+            setup(props, ctx) {
+                const action = (event) => {
+                    ctx.emit('update:modelValue', event.target.value)  
+                } 
+                return {action}
+            },
+            template:`<div><span>输入框：</span><input :value="modelValue" @input="action"/></div>`
+        }
+        App.component("my-input", inputComponent)
+        App.mount("#Application") 
+    </script>
+</body>
+</html>

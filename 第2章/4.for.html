@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>循环渲染</title>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+</head>
+<body>
+    <div id="Application">
+        <ul>
+            <template v-for="(item,index) in handle(list)">
+                <div>{{index + "." + item.name}}</div>
+                <div>{{item.num}}</div>
+            </template>
+        </ul>
+        <ol>
+            <li v-for="(value,key,index) in preson" :key="index">
+                {{index}}-{{key}}:{{value}}
+            </li>
+        </ol>
+        <div v-for="n in 5">
+            重复次数：{{n}}
+        </div>
+        <!-- <div v-for="n in 5" v-if="n!=3">
+            重复次数：{{n}}
+        </div> -->
+        <button @click="click">
+            逆序
+        </button>
+    </div>
+    <script>
+        const {createApp, ref} = Vue
+        // 定义一个Vue组件
+        const config = {
+            setup() {
+                const list = ref([
+                    {name: "珲少", num: "151xxxxxxxx"},
+                    {name: "Jaki", num: "151xxxxxxxx"},
+                    {name: "Lucy", num: "151xxxxxxxx"},
+                    {name: "Monki", num: "151xxxxxxxx"},
+                    {name: "Bei", num: "151xxxxxxxx"}
+                    ])
+                const preson = ref({
+                    name: "珲少",
+                    age: "00",
+                    num: "151xxxxxxxx",
+                    emali: "xxxx@xx.com"
+                    })
+                const click = () => {
+                    list.value.reverse()
+                }
+                const handle = (l)=> {
+                    return l.filter(obj => obj.name != "珲少")
+                }
+                return {list, preson, click, handle}
+            }
+        }
+        createApp(config).mount("#Application") 
+    </script>
+</body>
+</html>
